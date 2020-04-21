@@ -8,7 +8,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 client = MongoClient('45.119.146.59', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
 db = client.foodKcal
 
-re = requests.get('http://openapi.foodsafetykorea.go.kr/api/ade319c400574705a22d/I0750/json/13001/14000')
+re = requests.get('http://openapi.foodsafetykorea.go.kr/api//I0750/json/13001/14000')
 rjson = re.json()
 
 for i in range(0, len(rjson['I0750']['row'])):
