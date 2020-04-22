@@ -17,7 +17,7 @@
     <div id = "wrap">
 
       <div class="page-header">
-        <h1>Example page header <small>Subtext for header</small></h1>
+        <h1>오늘 뭐 먹었니? <small>솔직하게 적어라</small></h1>
       </div>
 
         <ul class="nav nav-tabs">
@@ -34,12 +34,10 @@
               <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
             </li>
           </ul>
-          <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" id="foodname">
-          <button type="submit" class="btn btn-default" onclick="search_food()">Submit</button>
-        </div>
-        </form>
+          <button class="btn btn-default" onclick="search_food()">Submit</button>
+          </div>
           <textarea class="form-control" rows="3"></textarea>
 
 
@@ -63,37 +61,36 @@
         $('#foodname').focus(); }
         $.ajax({
         type: "GET",
-        url: "/search",
-        data: { foodname: foodname },
+        url: "/search?foodname="+foodname,
+        data: { },
+        async: false,
         success  : function(response) {
-        if (response['result'] == 'success') {
-          let food = response['foodkcal'];
-          alert(food)
-          console.log(food);
-          for (let i = 0; i < food.length; i++) {
-              make_card(food[i]['food_name'], food[i]['gram_foronetime'], food[i]['food_kcal'],food[i]['food_group']);
+          console.log(response['food'])
+       if (response['result'] == 'success') {
+          let food = response['food'];
+          console.log(typeof(food))
+          console.log(Object.keys(food).length)
+          for (let i=0; i < Object.keys(food).length; i++) {
+          food_name =food[i]['foodname'];
+          console.log(food_name)
+          food_portionsize =food[i]['portionsize'];
+          food_foodkcal =food[i]['foodkcal'];
+          make_card(food_name,food_portionsize,food_foodkcal);
           }
           }else {
           alert('데이터를 받아오지 못했습니다.');
-        }
-
-        }
+        }}
          })
 }
-
-       function make_card(food_name, gram_foronetime, food_kcal, food_group) {
+       function make_card(food_name, food_portionsize, food_foodkcal) {
             let temp_html = '<tr>\
                                 <td>'+ food_name + '</td>\
-                                <td>'+ gram_foronetime + '</td>\
-                                <td>'+ food_kcal + '</td>\
-                                 <td>'+ food_group + '</td>\
-                            </tr>';
+                                <td>'+ food_portionsize + '</td>\
+                                <td>'+ food_foodkcal + '</td></tr>';
             $('#orderTable').append(temp_html);
         }
 
 </script>
-
-
 </body>
 </head>
 

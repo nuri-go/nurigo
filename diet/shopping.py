@@ -1,5 +1,6 @@
 import sys
 import io
+import json
 from pymongo import MongoClient           # pymongo를 임포트 하기(패키지 인스톨 먼저 해야겠죠?)
 client = MongoClient('45.119.146.59', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
 db = client.foodKcal
@@ -11,19 +12,25 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 
 
 ## HTML을 주는 부분
-@app.route('/search')
+@app.route('/')
 def home():
     return render_template('writekcal.html')
+
 @app.route('/search', methods=['GET'])
 def search():
-    print('지금 되고있는거니..?')
+    #print('지금 되고있는거니..?')
     food_name = request.args.get('foodname')
-    print(food_name)
+    #print(food_name)
+    kcal = []
     foodkcal = list(db.foodKcal.find({'foodname': {'$regex': food_name}}))
+    #foodkcal = [{'foodname': '갓김치', 'foodkcal': '32', 'portionsize': '100'}]
 
     for i in foodkcal:
-       print("음식: " + str(i['foodname'] + ' 용량: ' + i['portionsize'] + ' 칼로리: ' + i['foodkcal']))
-    return jsonify({'result':'success', 'food':foodkcal })
+        a ={'food_name':str(i['foodname']),
+         'protionsize':str(i['portionsize']),
+         'foodkcal':str(i['foodkcal'])}
+        kcal.append(a)
+    return jsonify({'result':'success', 'food':kcal})
 
 
 @app.route('/checkorder')
