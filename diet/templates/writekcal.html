@@ -22,6 +22,10 @@
   margin-top: 50px;
   }
 
+h1{
+      margin-bottom: 50px;
+  }
+
 </style>
 
 <body>
@@ -31,22 +35,14 @@
       </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a class="nav-link active" href="#">아침</a>
+              <a class="nav-link active" href="#"> 오늘 입으로 들어간 음식들</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">점심</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">저녁</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-            </li>
+
           </ul>
           <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" id="foodname">
           <button class="btn btn-default" id= findfood onclick="search_food()">음식 검색</button>
-    </div>
+        </div>
           <div id="listEaten">
             <ul class="list-group" id="allfood">
             </ul>
@@ -107,6 +103,7 @@
                                 <td>'+ food_foodkcal + '</td>\
                                 <td>'+ food_portionsize + '</td></tr>';
             $('#orderTable').append(temp_html);
+
                  }
 
 /*       $('#orderTable').on('click', 'tr',function(){
@@ -173,10 +170,9 @@
 
      $("#allfood").append('<li class="list-group-item list-group-item-success">' +tdArr +'</li>');
 
-
-
-
-
+     $('#orderTable').html('');
+     $('#foodname').val('');
+     $('#foodname').focus();
 
    });
 
