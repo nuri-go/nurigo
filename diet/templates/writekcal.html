@@ -12,14 +12,23 @@
     <!-- JQuery를 import 합니다 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+<style media="screen">
+#listEaten{
+
+
+}
+
+#takeit{
+  margin-top: 50px;
+  }
+
+</style>
 
 <body>
     <div id = "wrap">
-
       <div class="page-header">
         <h1>오늘 뭐 먹었니? <small>솔직하게 적어라</small></h1>
       </div>
-
         <ul class="nav nav-tabs">
             <li class="nav-item">
               <a class="nav-link active" href="#">아침</a>
@@ -36,22 +45,32 @@
           </ul>
           <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" id="foodname">
-          <button class="btn btn-default" onclick="search_food()">Submit</button>
-          </div>
-          <textarea class="form-control" rows="3"></textarea>
-
-
+          <button class="btn btn-default" id= findfood onclick="search_food()">음식 검색</button>
     </div>
-            <table class="table" >
+          <div id="listEaten">
+            <ul class="list-group" id="allfood">
+            </ul>
+          </div>
+
+<div id="takeit">
+  <button type="button" class="btn btn-outline btn-primary pull-right" id="selectBtn">선택</button>
+</div>
+
+      <table class="table" >
             <thead>
-                <tr>
+                <tr >
+                    <td> 선택</td>
+                    <td> No</td>
                     <td> 음식</td>
+                    <td> 칼로리</td>
+                    <td> 1회제공량</td>
                 </tr>
             </thead>
             <tbody id="orderTable">
             </tbody>
         </table>
 <script type="text/javascript">
+        let a=''
 
         function search_food(){
         let foodname =$('#foodname').val();
@@ -59,36 +78,108 @@
         alert("먹은 음식을 적으세요")
         $('#foodname').val('');
         $('#foodname').focus(); }
-        $.ajax({
-        type: "GET",
-        url: "/search?foodname="+foodname,
-        data: { },
-        async: false,
-        success  : function(response) {
-          console.log(response['food'])
-       if (response['result'] == 'success') {
-          let food = response['food'];
-          console.log(typeof(food))
-          console.log(Object.keys(food).length)
-          for (let i=0; i < Object.keys(food).length; i++) {
-          food_name =food[i]['foodname'];
-          console.log(food_name)
-          food_portionsize =food[i]['portionsize'];
-          food_foodkcal =food[i]['foodkcal'];
-          make_card(food_name,food_portionsize,food_foodkcal);
-          }
-          }else {
-          alert('데이터를 받아오지 못했습니다.');
-        }}
-         })
-}
-       function make_card(food_name, food_portionsize, food_foodkcal) {
-            let temp_html = '<tr>\
-                                <td>'+ food_name + '</td>\
-                                <td>'+ food_portionsize + '</td>\
-                                <td>'+ food_foodkcal + '</td></tr>';
-            $('#orderTable').append(temp_html);
+        else {
+          $.ajax({
+          type: "GET",
+          url: "/search?foodname="+foodname,
+          data: { },
+          async: false,
+          success  : function(response) {
+         if (response['result'] == 'success') {
+            let food = response['food'];
+            for (let i=0; i < Object.keys(food).length; i++) {
+                food_name =food[i]['food_name'];
+                food_portionsize =food[i]['portionsize'];
+                food_foodkcal =food[i]['foodkcal'];
+            make_card(a,i,food_name,food_portionsize,food_foodkcal);
+            }
+            }else {
+            alert('데이터를 받아오지 못했습니다.');
+          }}
+           })
         }
+}
+       function make_card(a,i,food_name, food_portionsize, food_foodkcal) {
+            let temp_html = '<tr class="foodtable">\
+                                <td><input type="checkbox" name="user_CheckBox" >'+ ''+'</td>\
+                                <td>'+ (i+1) + '</td>\
+                                <td>'+ food_name + '</td>\
+                                <td>'+ food_foodkcal + '</td>\
+                                <td>'+ food_portionsize + '</td></tr>';
+            $('#orderTable').append(temp_html);
+                 }
+
+/*       $('#orderTable').on('click', 'tr',function(){
+
+         var tr = document.querySelectorAll('tr');
+
+         function tr_click(idx){
+             tr[idx].onclick = function(){
+                 alert(idx);
+
+             };
+         }
+         for(var i=0; i<tr.length; i++){
+           tr_click(i);
+
+          }
+
+         	$("#allfood").append($(this).text()+'<br><br>');
+        });*/
+
+    $("#selectBtn").click(function(){
+
+     var rowData = new Array();
+     var tdArr = new Array();
+     var checkbox = $("input[name=user_CheckBox]:checked");
+
+     // 체크된 체크박스 값을 가져온다
+     checkbox.each(function(i) {
+
+       // checkbox.parent() : checkbox의 부모는 <td>이다.
+       // checkbox.parent().parent() : <td>의 부모이므로 <tr>이다.
+       var tr = checkbox.parent().parent().eq(i);
+       var td = tr.children();
+
+       // 체크된 row의 모든 값을 배열에 담는다.
+       rowData.push(tr.text());
+
+       // td.eq(0)은 체크박스 이므로  td.eq(1)의 값부터 가져온다.
+       var no = td.eq(1).text()+", "
+       var foodname = td.eq(2).text()+", ";
+       var kcal = td.eq(3).text()+", ";
+       var portionsize = td.eq(4).text()+", ";
+
+       var myArray3 = [];
+       myArray3.push(kcal)
+
+       console.log(myArray3);
+       // 가져온 값을 배열에 담는다.
+
+       tdArr.push(foodname);
+       tdArr.push(kcal);
+       tdArr.push(portionsize);
+
+
+       console.log("no : " + no);
+			 console.log("foodname : " + foodname);
+			 console.log("kcal : " + kcal);
+			 console.log("portionsize : " + portionsize);
+
+     });
+
+     $("#ex3_Result1").html(" * 체크된 Row의 모든 데이터 = "+rowData);
+     $("#ex3_Result2").html(tdArr);
+
+     $("#allfood").append('<li class="list-group-item list-group-item-success">' +tdArr +'</li>');
+
+
+
+
+
+
+   });
+
 
 </script>
 </body>

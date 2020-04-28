@@ -27,12 +27,11 @@ def search():
 
     for i in foodkcal:
         a ={'food_name':str(i['foodname']),
-         'protionsize':str(i['portionsize']),
+         'portionsize':str(i['portionsize']),
          'foodkcal':str(i['foodkcal'])}
         kcal.append(a)
+
     return jsonify({'result':'success', 'food':kcal})
-
-
 @app.route('/checkorder')
 def show_table():
     return render_template('checkoder.html')
@@ -54,11 +53,11 @@ def make_order():
     db.dbhomework.insert_one(oder_list)
     return jsonify({'result':'success', 'msg': '주문이 성공적으로 이루어졌습니다'})
 
+
 @app.route('/oderlist', methods=['GET'])
 def read_order():
     oderfromUser = list(db.dbhomework.find({},{'_id':0}))
     return jsonify({'result': 'success', 'oder': oderfromUser})
-
 
 if __name__ == '__main__':
     app.run('127.0.0.1', port=5000, debug=True)
